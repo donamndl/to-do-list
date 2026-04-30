@@ -34,7 +34,7 @@ A beautifully designed, fully functional **To-Do List** web application built wi
 
 1. **Clone or download** this repository:
    ```bash
-   git clone https://github.com/your-username/todo-glassmorphism.git
+   git clone https://github.com/donamndl/todo-glassmorphism.git
    ```
 
 2. **Open the folder** in VS Code:
