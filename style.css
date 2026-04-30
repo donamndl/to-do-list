@@ -16,6 +16,14 @@ body {
     padding: 20px;
 }
 
+/* Confetti canvas */
+#confetti-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+}
+
 /* ── Glass Card ── */
 .container {
     display: flex;
@@ -26,11 +34,11 @@ body {
 
 .todo-app {
     width: 100%;
-    max-width: 420px;
+    max-width: 430px;
     padding: 2rem 1.8rem;
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 18px;
     color: white;
     border-radius: 22px;
     box-shadow: 0 8px 60px rgba(0, 0, 0, 0.45);
@@ -111,11 +119,65 @@ body {
 
 .progress-circle:hover { transform: scale(1.05); }
 
+/* ── Search & Filter ── */
+.search-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 14px;
+    padding: 8px 12px;
+}
+
+.search-icon {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+#search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: "Jost", sans-serif;
+}
+
+#search-input::placeholder { color: rgba(255,255,255,0.35); }
+
+.filter-btns {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.filter-btn {
+    padding: 4px 9px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.78rem;
+    font-family: "Jost", sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+    background: rgba(255,111,145,0.35);
+    border-color: rgba(255,111,145,0.5);
+    color: #fff;
+}
+
 /* ── Input Area ── */
 .input-area {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     width: 100%;
 }
 
@@ -137,6 +199,25 @@ body {
     border-color: rgba(255, 111, 145, 0.6);
     background: rgba(255, 194, 209, 0.22);
 }
+
+/* Priority select in input */
+#priority-select {
+    padding: 8px 6px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: rgba(255, 194, 209, 0.15);
+    color: #fff;
+    font-size: 1rem;
+    font-family: "Jost", sans-serif;
+    outline: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    appearance: none;
+    text-align: center;
+    width: 46px;
+}
+
+#priority-select option { background: #2a0a1a; color: #fff; }
 
 .input-area button {
     width: 42px;
@@ -166,7 +247,7 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-height: 320px;
+    max-height: 340px;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(255,111,145,0.4) transparent;
@@ -195,9 +276,13 @@ body {
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
-    transition: background 0.2s, transform 0.2s;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
     animation: slideIn 0.3s ease;
+    cursor: grab;
+    user-select: none;
 }
+
+.task-item:active { cursor: grabbing; }
 
 @keyframes slideIn {
     from { opacity: 0; transform: translateX(-20px); }
@@ -205,6 +290,33 @@ body {
 }
 
 .task-item:hover { background: rgba(255, 255, 255, 0.11); }
+
+/* Drag states */
+.task-item.dragging {
+    opacity: 0.45;
+    transform: scale(0.97);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+.task-item.drag-over {
+    border-color: rgba(255,111,145,0.6);
+    background: rgba(255,111,145,0.12);
+    transform: scale(1.01);
+}
+
+/* Priority badge */
+.priority-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+}
+
+.priority-badge.high   { background: rgba(255,80,80,0.25);  color: #ff8080; border: 1px solid rgba(255,80,80,0.35); }
+.priority-badge.medium { background: rgba(255,200,80,0.2);  color: #ffd070; border: 1px solid rgba(255,200,80,0.35); }
+.priority-badge.low    { background: rgba(80,220,120,0.2);  color: #80e0a0; border: 1px solid rgba(80,220,120,0.35); }
 
 /* Circle checkbox */
 .task-checkbox {
@@ -228,10 +340,7 @@ body {
     border-color: #ff6f91;
 }
 
-.task-item.completed .task-checkbox::after {
-    content: '✓';
-    font-weight: 700;
-}
+.task-item.completed .task-checkbox::after { content: '✓'; font-weight: 700; }
 
 /* Task text */
 .task-text {
@@ -244,8 +353,19 @@ body {
 
 .task-item.completed .task-text {
     text-decoration: line-through;
-    color: rgba(240, 224, 232, 0.45);
+    color: rgba(240, 224, 232, 0.4);
 }
+
+/* Drag handle */
+.drag-handle {
+    color: rgba(255,255,255,0.25);
+    font-size: 0.85rem;
+    cursor: grab;
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+
+.task-item:hover .drag-handle { color: rgba(255,255,255,0.5); }
 
 /* Action buttons */
 .task-actions {
@@ -267,16 +387,8 @@ body {
     transition: transform 0.2s, filter 0.2s;
 }
 
-.btn-edit {
-    background: linear-gradient(135deg, #ffb347, #ffd47e);
-    color: #5a3a00;
-}
-
-.btn-delete {
-    background: linear-gradient(135deg, #ff6f91, #ff4d75);
-    color: #fff;
-}
-
+.btn-edit   { background: linear-gradient(135deg, #ffb347, #ffd47e); color: #5a3a00; }
+.btn-delete { background: linear-gradient(135deg, #ff6f91, #ff4d75); color: #fff; }
 .btn-edit:hover, .btn-delete:hover { transform: scale(1.15); filter: brightness(1.1); }
 
 /* ── Empty State ── */
@@ -288,33 +400,50 @@ body {
     padding: 10px 0;
 }
 
-.empty-img {
-    width: 120px;
-    opacity: 0.7;
+.empty-img { width: 120px; mix-blend-mode: screen; opacity: 0.85; }
+.empty-state p { font-size: 0.9rem; color: rgba(255,255,255,0.45); }
+
+/* ── Toast ── */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: rgba(30,10,40,0.92);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255,111,145,0.4);
+    backdrop-filter: blur(10px);
+    z-index: 500;
+    opacity: 0;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+    pointer-events: none;
+    white-space: nowrap;
 }
 
-.empty-state p {
-    font-size: 0.9rem;
-    color: rgba(255,255,255,0.45);
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 /* ── Edit Modal ── */
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0,0,0,0.6);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 100;
     backdrop-filter: blur(4px);
-    animation: fadeIn 0.2s ease;
 }
 
 .modal-overlay.active { display: flex; }
 
 .modal {
-    background: rgba(25, 10, 40, 0.85);
+    background: rgba(25, 10, 40, 0.9);
     border: 1.5px solid rgba(255,255,255,0.18);
     border-radius: 18px;
     padding: 28px 24px;
@@ -322,7 +451,7 @@ body {
     max-width: 360px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     color: #fff;
     backdrop-filter: blur(20px);
     animation: popIn 0.25s ease;
@@ -348,6 +477,32 @@ body {
 
 .modal input:focus { border-color: rgba(255,111,145,0.6); }
 
+.modal-priority {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal-priority label {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+}
+
+#edit-priority-select {
+    flex: 1;
+    padding: 8px 14px;
+    border-radius: 22px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    background: rgba(255,194,209,0.15);
+    color: #fff;
+    font-size: 0.95rem;
+    font-family: "Jost", sans-serif;
+    outline: none;
+    cursor: pointer;
+}
+
+#edit-priority-select option { background: #2a0a1a; }
+
 .modal-btns {
     display: flex;
     gap: 10px;
@@ -365,22 +520,15 @@ body {
     transition: transform 0.2s, filter 0.2s;
 }
 
-#cancel-edit-btn {
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-}
-
-#save-edit-btn {
-    background: linear-gradient(135deg, #ff6f91, #ff4d75);
-    color: #fff;
-}
-
+#cancel-edit-btn { background: rgba(255,255,255,0.12); color: #fff; }
+#save-edit-btn   { background: linear-gradient(135deg, #ff6f91, #ff4d75); color: #fff; }
 .modal-btns button:hover { transform: scale(1.04); filter: brightness(1.1); }
 
 /* ── Responsive ── */
 @media (max-width: 480px) {
-    .todo-app { padding: 1.5rem 1.2rem; gap: 16px; }
+    .todo-app { padding: 1.5rem 1.2rem; gap: 14px; }
     .todo-app h1 { font-size: 1.6rem; }
     .progress-circle { width: 54px; height: 54px; font-size: 0.85rem; }
     .empty-img { width: 90px; }
+    .filter-btn { padding: 3px 7px; font-size: 0.72rem; }
 }
