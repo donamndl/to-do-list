@@ -1,37 +1,110 @@
-# 📝 To-Do List
-A sleek, modern, and highly interactive To-Do List application built with Vanilla JavaScript, HTML5, and CSS3. This project features a beautiful Glassmorphism UI, characterized by transparency, background blur, and vibrant multi-layered aesthetics.
-![alt text](https://via.placeholder.com/800x400?text=App+Screenshot+Placeholder)
+# ✅ Glassmorphism To-Do App
+
+A beautifully designed, fully functional **To-Do List** web application built with pure **HTML, CSS, and JavaScript** — no frameworks, no dependencies. Features a stunning glassmorphism UI, smooth animations, and a rich set of productivity features.
+
+![To-Do App Preview](./images/preview.png)
 
 ---
 
-## ✨ Features
-- Add Tasks: Quickly add new items to your list.
-- Complete Tasks: Toggle task completion with a satisfying visual strike-through.
-- Delete Tasks: Remove tasks instantly with a single click.
-- Persistent Storage: Uses localStorage to save your tasks so they don't disappear when you refresh the page.
-- Responsive Design: Fully optimized for desktops, tablets, and mobile devices.
-- Glassmorphism UI: A modern design using backdrop-filter, semi-transparent backgrounds, and subtle borders.[1]
+## 🌟 Features
+
+| Feature | Description |
+|---|---|
+| 🔮 Glassmorphism UI | Frosted glass card with backdrop blur and subtle borders |
+| 📊 Progress Tracker | Animated progress bar + live counter showing completed vs total |
+| 🏷️ Priority Tags | Label tasks as 🔴 High, 🟡 Medium, or 🟢 Low priority |
+| 🔍 Search & Filter | Instantly search tasks by name or filter by priority level |
+| 🔃 Drag & Drop | Reorder tasks by dragging them up or down the list |
+| 🎉 Confetti | Celebratory confetti animation when all tasks are completed |
+| ✏️ Edit Tasks | Update task text and priority via a sleek modal dialog |
+| 🗑️ Delete Tasks | Remove tasks with a single click |
+| 🔔 Toast Notifications | Non-intrusive feedback for every action |
+| 💾 Persistent Storage | Tasks are saved to `localStorage` and survive page refresh |
+| 📱 Responsive Design | Fully optimized for mobile, tablet, and desktop |
 
 ---
 
-## 🎨 UI Aesthetics (Glassmorphism)
-This app utilizes the latest UI trends to provide a "frosted glass" look:
-- Transparency: Semi-transparent containers using rgba colors.
-- Blur Effect: Implementation of backdrop-filter: blur() for depth.
-- Multi-layered: Subtle shadows and light borders to create a 3D "floating" effect.
-- Vibrant Backgrounds: Designed to look best against colorful, high-contrast wallpapers.
+## 🚀 Getting Started
+
+### Prerequisites
+- A modern web browser (Chrome, Firefox, Edge, Safari)
+- [VS Code](https://code.visualstudio.com/) with the **Live Server** extension *(recommended)*
+
+### Run Locally
+
+1. **Clone or download** this repository:
+   ```bash
+   git clone https://github.com/your-username/todo-glassmorphism.git
+   ```
+
+2. **Open the folder** in VS Code:
+   ```bash
+   cd todo-glassmorphism
+   code .
+   ```
+
+3. **Start Live Server:**
+   - Click **"Go Live"** in the VS Code status bar, or
+   - Right-click `index.html` → **Open with Live Server**
+
+4. Visit `http://127.0.0.1:5500/index.html` in your browser.
+
+> ⚠️ **Important:** Always open the **folder** in VS Code, not just the file. Live Server requires a folder root to serve correctly.
 
 ---
 
-## 🚀 Technologies Used
-- HTML5: Semantic structure for the task container and input fields.
-- CSS3: Custom properties (variables), Flexbox, and advanced filters for the glass effect.
-- JavaScript (ES6+): DOM manipulation, event listeners, and Local Storage API.
+## 🎮 How to Use
+
+### Adding a Task
+1. Type your task in the input field
+2. Select a priority — 🟡 Medium (default), 🔴 High, or 🟢 Low
+3. Press **Enter** or click the **+** button
+
+### Managing Tasks
+| Action | How |
+|---|---|
+| ✅ Complete a task | Click the circle checkbox on the left |
+| ✏️ Edit a task | Click the **yellow pencil** button |
+| 🗑️ Delete a task | Click the **pink trash** button |
+| 🔃 Reorder tasks | Drag using the **⠿ grip handle** on the left |
+
+### Search & Filter
+- Type in the **search bar** to find tasks by keyword
+- Click **All / 🔴 / 🟡 / 🟢** to filter by priority
+- Search and filter work **simultaneously**
 
 ---
 
-## 🌟 Future Improvements
-- Confetti when all tasks done
-- Add categories/tags (Work, Personal, etc.)
-- Add drag-and-drop reordering.
-- Integrate a "Priority" selector for tasks.
+## 🛠️ Built With
+
+- **HTML5** — Semantic structure
+- **CSS3** — Glassmorphism, Flexbox, animations, `backdrop-filter`
+- **Vanilla JavaScript (ES6+)** — DOM manipulation, drag & drop API, Canvas API
+- **Font Awesome 6** — Icons
+- **Google Fonts** — Jost typeface
+- **Web Storage API** — `localStorage` for data persistence
+
+---
+
+## ✨ Design Highlights
+
+- **Glassmorphism card** using `backdrop-filter: blur()` with semi-transparent background
+- **Smooth animations** — fade-in on load, slide-in for new tasks, pop-in for modal
+- **Custom confetti engine** built on HTML5 Canvas — no external library needed
+- **Input shake animation** when submitting an empty task
+- **Drag-over visual feedback** with highlighted drop targets
+- **Custom scrollbar** styled to match the pink color theme
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Due dates & deadline reminders
+- [ ] Task categories / folders
+- [ ] Dark / Light theme toggle
+- [ ] Export tasks as PDF or CSV
+- [ ] PWA support (offline mode)
+
+---
+
+<p align="center">Made with ❤️ and vanilla JavaScript</p>
