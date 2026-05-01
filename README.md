@@ -12,11 +12,9 @@ A beautifully designed, fully functional **To-Do List** web application built wi
 |---|---|
 | 🔮 Glassmorphism UI | Frosted glass card with backdrop blur and subtle borders |
 | 📊 Progress Tracker | Animated progress bar + live counter showing completed vs total |
-| 🏷️ Priority Tags | Label tasks as 🔴 High, 🟡 Medium, or 🟢 Low priority |
-| 🔍 Search & Filter | Instantly search tasks by name or filter by priority level |
 | 🔃 Drag & Drop | Reorder tasks by dragging them up or down the list |
-| 🎉 Confetti | Celebratory confetti animation when all tasks are completed |
-| ✏️ Edit Tasks | Update task text and priority via a sleek modal dialog |
+| 🎉 Confetti | Celebratory confetti rises from the bottom when all tasks are completed |
+| ✏️ Edit Tasks | Update task text via a sleek modal dialog |
 | 🗑️ Delete Tasks | Remove tasks with a single click |
 | 🔔 Toast Notifications | Non-intrusive feedback for every action |
 | 💾 Persistent Storage | Tasks are saved to `localStorage` and survive page refresh |
@@ -57,8 +55,7 @@ A beautifully designed, fully functional **To-Do List** web application built wi
 
 ### Adding a Task
 1. Type your task in the input field
-2. Select a priority — 🟡 Medium (default), 🔴 High, or 🟢 Low
-3. Press **Enter** or click the **+** button
+2. Press **Enter** or click the **+** button
 
 ### Managing Tasks
 | Action | How |
@@ -67,11 +64,7 @@ A beautifully designed, fully functional **To-Do List** web application built wi
 | ✏️ Edit a task | Click the **yellow pencil** button |
 | 🗑️ Delete a task | Click the **pink trash** button |
 | 🔃 Reorder tasks | Drag using the **⠿ grip handle** on the left |
-
-### Search & Filter
-- Type in the **search bar** to find tasks by keyword
-- Click **All / 🔴 / 🟡 / 🟢** to filter by priority
-- Search and filter work **simultaneously**
+| 🎉 Confetti | Complete **all tasks** to trigger confetti rising from the bottom |
 
 ---
 
@@ -90,7 +83,7 @@ A beautifully designed, fully functional **To-Do List** web application built wi
 
 - **Glassmorphism card** using `backdrop-filter: blur()` with semi-transparent background
 - **Smooth animations** — fade-in on load, slide-in for new tasks, pop-in for modal
-- **Custom confetti engine** built on HTML5 Canvas — no external library needed
+- **Custom confetti engine** built on HTML5 Canvas — particles rise from the bottom upward, no external library needed
 - **Input shake animation** when submitting an empty task
 - **Drag-over visual feedback** with highlighted drop targets
 - **Custom scrollbar** styled to match the pink color theme
@@ -101,6 +94,8 @@ A beautifully designed, fully functional **To-Do List** web application built wi
 
 - [ ] Due dates & deadline reminders
 - [ ] Task categories / folders
+- [ ] Priority tags (High / Medium / Low)
+- [ ] Search & filter bar
 - [ ] Dark / Light theme toggle
 - [ ] Export tasks as PDF or CSV
 - [ ] PWA support (offline mode)
