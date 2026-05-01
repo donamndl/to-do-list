@@ -1,78 +1,57 @@
 // ══════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════
-let tasks       = JSON.parse(localStorage.getItem('tasks')) || [];
-let editIndex   = null;
-let filterMode  = 'all';   // 'all' | 'high' | 'medium' | 'low'
-let searchQuery = '';
-let dragSrcIdx  = null;    // drag-and-drop source index
+let tasks      = JSON.parse(localStorage.getItem('tasks')) || [];
+let editIndex  = null;
+let dragSrcIdx = null;
 
 // ══════════════════════════════════════════════
 //  DOM REFS
 // ══════════════════════════════════════════════
-const taskForm         = document.getElementById('task-form');
-const taskInput        = document.getElementById('task-input');
-const prioritySelect   = document.getElementById('priority-select');
-const taskList         = document.getElementById('task-list');
-const emptyState       = document.getElementById('empty-state');
-const progressBar      = document.getElementById('progress-bar');
-const progressCount    = document.getElementById('progress-count');
-const progressLabel    = document.getElementById('progress-label');
-const searchInput      = document.getElementById('search-input');
-const filterBtns       = document.querySelectorAll('.filter-btn');
-const modalOverlay     = document.getElementById('modal-overlay');
-const editInput        = document.getElementById('edit-input');
-const editPrioritySel  = document.getElementById('edit-priority-select');
-const saveEditBtn      = document.getElementById('save-edit-btn');
-const cancelEditBtn    = document.getElementById('cancel-edit-btn');
-const toastEl          = document.getElementById('toast');
-const confettiCanvas   = document.getElementById('confetti-canvas');
+const taskForm      = document.getElementById('task-form');
+const taskInput     = document.getElementById('task-input');
+const taskList      = document.getElementById('task-list');
+const emptyState    = document.getElementById('empty-state');
+const progressBar   = document.getElementById('progress-bar');
+const progressCount = document.getElementById('progress-count');
+const progressLabel = document.getElementById('progress-label');
+const modalOverlay  = document.getElementById('modal-overlay');
+const editInput     = document.getElementById('edit-input');
+const saveEditBtn   = document.getElementById('save-edit-btn');
+const cancelEditBtn = document.getElementById('cancel-edit-btn');
+const toastEl       = document.getElementById('toast');
+const confettiCanvas= document.getElementById('confetti-canvas');
 
 // ══════════════════════════════════════════════
 //  RENDER
 // ══════════════════════════════════════════════
-function getFilteredTasks() {
-    return tasks.filter((t, i) => {
-        const matchesFilter = filterMode === 'all' || t.priority === filterMode;
-        const matchesSearch = t.text.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesFilter && matchesSearch;
-    });
-}
-
 function render() {
     taskList.innerHTML = '';
-    const filtered = getFilteredTasks();
 
-    if (filtered.length === 0) {
+    if (tasks.length === 0) {
         emptyState.style.display = 'flex';
     } else {
         emptyState.style.display = 'none';
-        filtered.forEach((task) => {
-            // Find real index in tasks[] for operations
-            const realIdx = tasks.indexOf(task);
+        tasks.forEach((task, i) => {
             const li = document.createElement('li');
             li.className = 'task-item' + (task.completed ? ' completed' : '');
             li.draggable = true;
-            li.dataset.index = realIdx;
-
-            const priorityLabels = { high: 'High', medium: 'Med', low: 'Low' };
+            li.dataset.index = i;
 
             li.innerHTML = `
                 <i class="fa-solid fa-grip-lines drag-handle"></i>
-                <div class="task-checkbox" data-index="${realIdx}"></div>
+                <div class="task-checkbox" data-index="${i}"></div>
                 <span class="task-text">${escapeHTML(task.text)}</span>
-                <span class="priority-badge ${task.priority}">${priorityLabels[task.priority] || 'Med'}</span>
                 <div class="task-actions">
-                    <button class="btn-edit"   data-index="${realIdx}" title="Edit">
+                    <button class="btn-edit"   data-index="${i}" title="Edit">
                         <i class="fa-solid fa-pencil"></i>
                     </button>
-                    <button class="btn-delete" data-index="${realIdx}" title="Delete">
+                    <button class="btn-delete" data-index="${i}" title="Delete">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
             `;
 
-            // ── Drag events ──
             li.addEventListener('dragstart', onDragStart);
             li.addEventListener('dragover',  onDragOver);
             li.addEventListener('dragleave', onDragLeave);
@@ -100,12 +79,11 @@ function updateProgress() {
     progressBar.style.width   = pct + '%';
     progressCount.textContent = `${completed} / ${total}`;
 
-    if (total === 0)           progressLabel.textContent = 'No tasks yet!';
-    else if (pct === 100)      progressLabel.textContent = '🎉 All Done!';
-    else if (pct >= 50)        progressLabel.textContent = 'Keep it Up!';
-    else                       progressLabel.textContent = 'Just Getting Started!';
+    if (total === 0)       progressLabel.textContent = 'No tasks yet!';
+    else if (pct === 100)  progressLabel.textContent = '🎉 All Done!';
+    else if (pct >= 50)    progressLabel.textContent = 'Keep it Up!';
+    else                   progressLabel.textContent = 'Just Getting Started!';
 
-    // Fire confetti only when newly reaching 100%
     if (total > 0 && completed === total && lastCompleted !== total) {
         lastCompleted = total;
         launchConfetti();
@@ -121,12 +99,10 @@ taskForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = taskInput.value.trim();
     if (!text) { shakeInput(); return; }
-
-    tasks.push({ text, priority: prioritySelect.value, completed: false });
+    tasks.push({ text, completed: false });
     taskInput.value = '';
-    prioritySelect.value = 'medium';
     render();
-    showToast('✅ Task added!');
+    showToast('Task added!');
 });
 
 function shakeInput() {
@@ -135,7 +111,7 @@ function shakeInput() {
 }
 
 // ══════════════════════════════════════════════
-//  DELEGATED EVENTS (check / edit / delete)
+//  DELEGATED EVENTS
 // ══════════════════════════════════════════════
 taskList.addEventListener('click', (e) => {
     const checkbox  = e.target.closest('.task-checkbox');
@@ -146,14 +122,13 @@ taskList.addEventListener('click', (e) => {
         const i = parseInt(checkbox.dataset.index);
         tasks[i].completed = !tasks[i].completed;
         render();
-        showToast(tasks[i].completed ? '✔️ Task completed!' : '↩️ Marked incomplete');
+        showToast(tasks[i].completed ? 'Task completed!' : 'Marked incomplete');
     }
 
     if (editBtn) {
         const i = parseInt(editBtn.dataset.index);
         editIndex = i;
         editInput.value = tasks[i].text;
-        editPrioritySel.value = tasks[i].priority || 'medium';
         modalOverlay.classList.add('active');
         editInput.focus();
     }
@@ -162,7 +137,7 @@ taskList.addEventListener('click', (e) => {
         const i = parseInt(deleteBtn.dataset.index);
         tasks.splice(i, 1);
         render();
-        showToast('🗑️ Task deleted');
+        showToast('Task deleted');
     }
 });
 
@@ -172,11 +147,10 @@ taskList.addEventListener('click', (e) => {
 saveEditBtn.addEventListener('click', () => {
     const text = editInput.value.trim();
     if (!text) return;
-    tasks[editIndex].text     = text;
-    tasks[editIndex].priority = editPrioritySel.value;
+    tasks[editIndex].text = text;
     closeModal();
     render();
-    showToast('✏️ Task updated!');
+    showToast('Task updated!');
 });
 
 cancelEditBtn.addEventListener('click', closeModal);
@@ -193,23 +167,6 @@ function closeModal() {
 }
 
 // ══════════════════════════════════════════════
-//  SEARCH & FILTER
-// ══════════════════════════════════════════════
-searchInput.addEventListener('input', () => {
-    searchQuery = searchInput.value;
-    render();
-});
-
-filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        filterMode = btn.dataset.filter;
-        render();
-    });
-});
-
-// ══════════════════════════════════════════════
 //  DRAG & DROP
 // ══════════════════════════════════════════════
 function onDragStart(e) {
@@ -217,30 +174,22 @@ function onDragStart(e) {
     this.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
 }
-
 function onDragOver(e) {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
     this.classList.add('drag-over');
 }
-
 function onDragLeave() {
     this.classList.remove('drag-over');
 }
-
 function onDrop(e) {
     e.preventDefault();
     const targetIdx = parseInt(this.dataset.index);
     if (dragSrcIdx === null || dragSrcIdx === targetIdx) return;
-
-    // Reorder tasks array
     const moved = tasks.splice(dragSrcIdx, 1)[0];
     tasks.splice(targetIdx, 0, moved);
-
     render();
-    showToast('↕️ Task reordered');
+    showToast('Task reordered');
 }
-
 function onDragEnd() {
     document.querySelectorAll('.task-item').forEach(el => {
         el.classList.remove('dragging', 'drag-over');
@@ -260,7 +209,7 @@ function showToast(msg) {
 }
 
 // ══════════════════════════════════════════════
-//  CONFETTI
+//  CONFETTI — rises from the BOTTOM upward
 // ══════════════════════════════════════════════
 const ctx = confettiCanvas.getContext('2d');
 let particles = [];
@@ -274,26 +223,26 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 function randomColor() {
-    const colors = ['#ff6f91','#ff9db5','#ffd47e','#ffb347','#80e0a0','#a0c4ff','#fff'];
+    const colors = ['#ff6f91','#ff9db5','#ffd47e','#ffb347','#80e0a0','#a0c4ff','#ffffff'];
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
 function createParticle() {
     return {
-        x:      Math.random() * confettiCanvas.width,
-        y:      -10,
-        r:      Math.random() * 7 + 4,
-        color:  randomColor(),
-        speed:  Math.random() * 3 + 2,
-        angle:  Math.random() * Math.PI * 2,
-        spin:   (Math.random() - 0.5) * 0.2,
-        drift:  (Math.random() - 0.5) * 1.5,
-        shape:  Math.random() > 0.5 ? 'rect' : 'circle',
+        x:     Math.random() * confettiCanvas.width,
+        y:     confettiCanvas.height + 10,   // spawn below screen
+        r:     Math.random() * 7 + 4,
+        color: randomColor(),
+        speed: Math.random() * 4 + 2,        // upward speed
+        angle: Math.random() * Math.PI * 2,
+        spin:  (Math.random() - 0.5) * 0.2,
+        drift: (Math.random() - 0.5) * 1.5, // slight horizontal sway
+        shape: Math.random() > 0.5 ? 'rect' : 'circle',
     };
 }
 
 function launchConfetti() {
-    particles = Array.from({ length: 120 }, createParticle);
+    particles = Array.from({ length: 130 }, createParticle);
     if (!confettiRunning) animateConfetti();
 }
 
@@ -302,7 +251,7 @@ function animateConfetti() {
     ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
 
     particles.forEach(p => {
-        p.y     += p.speed;
+        p.y     -= p.speed;  // move UP
         p.x     += p.drift;
         p.angle += p.spin;
 
@@ -321,8 +270,8 @@ function animateConfetti() {
         ctx.restore();
     });
 
-    // Remove off-screen particles
-    particles = particles.filter(p => p.y < confettiCanvas.height + 20);
+    // Remove particles once they've risen off the top
+    particles = particles.filter(p => p.y > -20);
 
     if (particles.length > 0) {
         requestAnimationFrame(animateConfetti);
@@ -345,7 +294,6 @@ function escapeHTML(str) {
     return div.innerHTML;
 }
 
-// ── Shake animation (CSS injected) ──
 const style = document.createElement('style');
 style.textContent = `
 @keyframes shake {
