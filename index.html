@@ -29,24 +29,8 @@
             </div>
         </div>
 
-        <div class="search-area">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="search-input" placeholder="Search tasks...">
-            <div class="filter-btns">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="high">🔴</button>
-                <button class="filter-btn" data-filter="medium">🟡</button>
-                <button class="filter-btn" data-filter="low">🟢</button>
-            </div>
-        </div>
-
         <form class="input-area" id="task-form">
             <input type="text" id="task-input" placeholder="Add a new task..." autocomplete="off">
-            <select id="priority-select" title="Priority">
-                <option value="medium">🟡</option>
-                <option value="high">🔴</option>
-                <option value="low">🟢</option>
-            </select>
             <button type="submit" id="add-task-btn">
                 <i class="fa-solid fa-plus"></i>
             </button>
@@ -55,7 +39,7 @@
         <div class="todos-container">
             <ul id="task-list"></ul>
             <div class="empty-state" id="empty-state">
-                <img src="./images/empty.png" alt="No tasks" class="empty-img">
+                <img src="./images/empty.avif" alt="No tasks" class="empty-img">
                 <p>No tasks yet! Add one above.</p>
             </div>
         </div>
@@ -69,14 +53,6 @@
     <div class="modal">
         <h3>Edit Task</h3>
         <input type="text" id="edit-input" placeholder="Update task...">
-        <div class="modal-priority">
-            <label>Priority</label>
-            <select id="edit-priority-select">
-                <option value="medium">🟡 Medium</option>
-                <option value="high">🔴 High</option>
-                <option value="low">🟢 Low</option>
-            </select>
-        </div>
         <div class="modal-btns">
             <button id="cancel-edit-btn">Cancel</button>
             <button id="save-edit-btn">Save</button>
