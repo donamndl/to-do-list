@@ -17,6 +17,7 @@
 
         <h1>To-Do App</h1>
 
+        <!-- Progress Box -->
         <div class="progress-box">
             <div class="progress-text">
                 <p id="progress-label">Keep it Up!</p>
@@ -29,30 +30,48 @@
             </div>
         </div>
 
+        <!-- Input Area -->
         <form class="input-area" id="task-form">
             <input type="text" id="task-input" placeholder="Add a new task..." autocomplete="off">
+            <input type="date" id="due-date-input" title="Set due date">
             <button type="submit" id="add-task-btn">
                 <i class="fa-solid fa-plus"></i>
             </button>
         </form>
 
+        <!-- Active Tasks -->
         <div class="todos-container">
             <ul id="task-list"></ul>
             <div class="empty-state" id="empty-state">
-                <img src="./images/empty.avif" alt="No tasks" class="empty-img">
+                <img src="./images/empty.png" alt="No tasks" class="empty-img">
                 <p>No tasks yet! Add one above.</p>
             </div>
+        </div>
+
+        <!-- Completed Tasks Collapsible -->
+        <div class="completed-section" id="completed-section" style="display:none;">
+            <button class="completed-toggle" id="completed-toggle">
+                <span id="completed-toggle-label">Completed (0)</span>
+                <i class="fa-solid fa-chevron-down toggle-icon" id="toggle-icon"></i>
+            </button>
+            <ul id="completed-list"></ul>
         </div>
 
     </div>
 </div>
 
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- Edit Modal -->
 <div class="modal-overlay" id="modal-overlay">
     <div class="modal">
         <h3>Edit Task</h3>
         <input type="text" id="edit-input" placeholder="Update task...">
+        <div class="modal-due">
+            <label><i class="fa-regular fa-calendar"></i> Due Date</label>
+            <input type="date" id="edit-due-input">
+        </div>
         <div class="modal-btns">
             <button id="cancel-edit-btn">Cancel</button>
             <button id="save-edit-btn">Save</button>
